@@ -3,7 +3,7 @@ name: Kernel build for redbull device
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      android_version:
         type: choice
         description: 'Select Android version'
         required: true
@@ -40,7 +40,7 @@ jobs:
         run: |
           # Set CONFIG dynamically based on matrix values
           CONFIG="redbull"
-          BRANCH="android-msm-redbull-4.19-android14"
+          BRANCH=${{ github.event.inputs.android_version }}
           
           # Set CONFIG as an environment variable for future steps
           echo "CONFIG=$CONFIG" >> $GITHUB_ENV
@@ -48,7 +48,7 @@ jobs:
           echo "CONFIG set to: $CONFIG"
 
           # Set RAMDISK_PATH environment variable for future steps
-          # echo "RAMDISK_PATH=$GITHUB_WORKSPACE/ramdisk/$CONFIG" >> $GITHUB_ENV
+          echo "RAMDISK_PATH=$GITHUB_WORKSPACE/ramdisk/$CONFIG/$BRANCH" >> $GITHUB_ENV
 
       # - name: Install Repo
       #   run: |
@@ -84,28 +84,31 @@ jobs:
         run: |
           echo "📁 Current working directory: $(pwd)"
           echo "📦 Searching for ramdisk ..."
-
-          FOUND=$(find . -type f -name "ramdisk" | head -n 1)
+          
+          # Find in $RAMDISK_PATH
+          echo "🔍 Searching in: $RAMDISK_PATH"
+          
+          FOUND=$(find "$RAMDISK_PATH" -type f -name "ramdisk" | head -n 1)
     
           if [ -z "$FOUND" ]; then
-            echo "❌ 未找到 ramdisk 文件，终止构建。重要文件。。不集成编译进去会开不了机。。哈哈"
+            echo "❌ The `ramdisk` file was not found, and the build was terminated. This is an important file. Without integrating it into the build, the device won't boot. Haha."
             exit 1
           else
-            echo "✅ 找到了文件：$FOUND"
-            echo "FOUND_PATH=$FOUND" >> $GITHUB_ENV
+            echo "✅ The `ramdisk` file was found: $FOUND"
           fi
 
-      # - name: Initialize and Sync Kernel Source
-      #   run: |
+      - name: Initialize and Sync Kernel Source
+        run: |
 
-      #     echo "创建配置目录：$CONFIG"
-      #     mkdir -p "$CONFIG"
+          echo "Create a configuration directory:$CONFIG"
+          mkdir -p "$CONFIG"
 
-      #     echo "复制 ramdisk：$FOUND_PATH 到 $CONFIG/"
-      #     cp -fv "$FOUND_PATH" "$CONFIG/"
-      #     cp -fv vendor_ramdisk "$CONFIG/"
+          echo "Copy ramdisk files：$RAMDISK_PATH to $CONFIG/"
+          cp -fv "$RAMDISK_PATH/ramdisk" "$CONFIG/"
+          cp -fv "$RAMDISK_PATH/vendor_ramdisk" "$CONFIG/"
           
-      #     cd "$CONFIG"
+          cd "$CONFIG"
+          ls -la
           
       #     # Initialize and sync kernel source
       #     echo "Initializing and syncing kernel source..."
