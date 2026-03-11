@@ -161,17 +161,13 @@ jobs:
       # #     cd ..
       # #     patch -p1 --fuzz=3 < 50_add_susfs_in_kernel-4.19.patch || true
 
-      - name: Apply KSU Hooks
-        run: |
-          echo "Changing to configuration directory: $CONFIG..."
-          # Remove line
-          mkdir -p "$CONFIG/private/msm-google"
-          cd "$CONFIG/private/msm-google/"
-          # Apply additional patch
-          ls ../../../
-          cat ../../../kernel_patches/ksu_hooks_4.19.patch
-          # cp ../../kernel_patches/ksu_hooks_4.19.patch ./
-          # patch -p1 --fuzz=3 < ./ksu_hooks_4.19.patch
+      # - name: Apply KSU Hooks
+      #   run: |
+      #     echo "Changing to configuration directory: $CONFIG..."
+      #     cd "$CONFIG/private/msm-google/"
+      #     # Apply additional patch
+      #     cp ../../../kernel_patches/ksu_hooks_4.19.patch ./
+      #     patch -p1 --fuzz=3 < ./ksu_hooks_4.19.patch
 
       # - name: Add SUSFS Configuration Settings
       #   run: |
@@ -229,20 +225,22 @@ jobs:
       #     echo "Building the kernel..."
       #     BUILD_AOSP_KERNEL=1 ./build_redbull-gki.sh
           
-      # - name: Create zip file for result
-      #   run: |
-      #     echo "Changing to configuration directory: $CONFIG..."
-      #     cd "$CONFIG"
-      #     mkdir fastboot_files
-      #     cp -r ./out/android-msm-pixel-4.19/dist/boot.img fastboot_files/
-      #     cp -r ./out/android-msm-pixel-4.19/dist/vendor_boot.img fastboot_files/
-      #     cp -r ./out/android-msm-pixel-4.19/dist/dtbo.img fastboot_files/
-      #     echo "Creating zip file for fastboot files..."
-      #     cd fastboot_files/
-      #     zip -r "fastboot.zip" .*
+      - name: Create zip file for result
+        run: |
+          echo "Changing to configuration directory: $CONFIG..."
+          cd "$CONFIG"
+          mkdir fastboot_files
+          # Make a sample file
+          echo "This is a sample file for fastboot files." > fastboot_files/sample.txt
+          # cp -r ./out/android-msm-pixel-4.19/dist/boot.img fastboot_files/
+          # cp -r ./out/android-msm-pixel-4.19/dist/vendor_boot.img fastboot_files/
+          # cp -r ./out/android-msm-pixel-4.19/dist/dtbo.img fastboot_files/
+          echo "Creating zip file for fastboot files..."
+          cd fastboot_files/
+          zip -r "fastboot.zip" .*
         
-      # - name: Upload result
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: fastboot.zip
-      #     path: "redfin/fastboot_files/fastboot.zip"
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: fastboot.zip
+          path: "redfin/fastboot_files/fastboot.zip"
