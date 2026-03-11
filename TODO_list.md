@@ -1,5 +1,5 @@
 - [x] Remove AnyKernel
-- Up-to-date KernelSU
+- [x] Up-to-date KernelSU
 - Remove SUSFS
 - Refactor build
     - Translate to English
