@@ -49,6 +49,7 @@ jobs:
 
           # Set RAMDISK_PATH environment variable for future steps
           echo "RAMDISK_PATH=$GITHUB_WORKSPACE/ramdisk/$CONFIG/$BRANCH" >> $GITHUB_ENV
+          echo "BRANCH >> $GITHUB_ENV"
 
       - name: Install Repo
         run: |
