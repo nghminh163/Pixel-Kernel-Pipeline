@@ -30,7 +30,7 @@ on:
 
 
 jobs:
-  build-kernel-4-19-redfin:
+  build-kernel-4-19-redbull:
     runs-on: ubuntu-22.04
 
     steps:
@@ -250,4 +250,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fastboot.zip
-          path: "$CONFIG/fastboot_files/fastboot.zip"
+          path: ${{ env.CONFIG }}/fastboot_files/fastboot.zip
