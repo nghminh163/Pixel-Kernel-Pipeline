@@ -16,16 +16,16 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # - name: Maximize build space
-      #   uses: easimon/maximize-build-space@master
-      #   with:
-      #     root-reserve-mb: 8192    # 8GB for root memory reservation
-      #     temp-reserve-mb: 2048     # 2GB for temporary memory reservation
-      #     swap-size-mb: 8192       # 8GB for swap size
-      #     remove-dotnet: 'true'
-      #     remove-android: 'true'
-      #     remove-haskell: 'true'
-      #     remove-codeql: 'true'
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 8192    # 8GB for root memory reservation
+          temp-reserve-mb: 2048     # 2GB for temporary memory reservation
+          swap-size-mb: 8192       # 8GB for swap size
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
           
       - name: Checkout code
         uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
       - name: Clone Dependencies
         run: |
           echo "Cloning dependencies..."
-          # SUSFS_BRANCH="kernel-4.19"
+          SUSFS_BRANCH="kernel-4.19"
 
           # Debug print the branches
           # echo "Using branch for SUSFS: $SUSFS_BRANCH"
@@ -76,7 +76,7 @@ jobs:
           # Clone repositories using the branch names
           # git clone https://github.com/WildPlusKernel/AnyKernel3.git -b "$ANYKERNEL_BRANCH"
           # git clone https://gitlab.com/simonpunk/susfs4ksu.git -b "$SUSFS_BRANCH"
-          # git clone https://github.com/DNNDHH/kernel_patches.git
+          git clone https://github.com/DNNDHH/kernel_patches.git
 
       - run: ls -l
 
@@ -139,27 +139,27 @@ jobs:
           echo "Adding KernelSU..."
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
 
-      # - name: Apply SUSFS Patches
-      #   run: |
-      #     echo "Changing to configuration directory: $CONFIG..."
-      #     cd "$CONFIG/private/msm-google/"
+      - name: Apply SUSFS Patches
+        run: |
+          echo "Changing to configuration directory: $CONFIG..."
+          cd "$CONFIG/private/msm-google/"
           
-      #     echo "Applying SUSFS patches..."
+          echo "Applying SUSFS patches..."
           
-      #     # Copy SUSFS patches
-      #     cp ../../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU/
-      #     cp ../../../susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.19.patch ./
-      #     cp ../../../susfs4ksu/kernel_patches/fs/* ./fs/
-      #     cp ../../../susfs4ksu/kernel_patches/include/linux/* ./include/linux/
+          # Copy SUSFS patches
+          cp ../../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU/
+          cp ../../../susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.19.patch ./
+          cp ../../../susfs4ksu/kernel_patches/fs/* ./fs/
+          cp ../../../susfs4ksu/kernel_patches/include/linux/* ./include/linux/
 
-      #     cd ./KernelSU
+          cd ./KernelSU
           
-      #     # Apply SUSFS patch for KernelSU
-      #     patch -p1 --fuzz=3 < 10_enable_susfs_for_ksu.patch || true
+          # Apply SUSFS patch for KernelSU
+          patch -p1 --fuzz=3 < 10_enable_susfs_for_ksu.patch || true
           
-      #     # Change to common directory and apply SUSFS patch
-      #     cd ..
-      #     patch -p1 --fuzz=3 < 50_add_susfs_in_kernel-4.19.patch || true
+          # Change to common directory and apply SUSFS patch
+          cd ..
+          patch -p1 --fuzz=3 < 50_add_susfs_in_kernel-4.19.patch || true
 
       - name: Apply KSU Hooks
         run: |
@@ -178,22 +178,22 @@ jobs:
           
           # Add SUSFS configuration settings
           echo "CONFIG_KSU=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SUS_KSTAT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SUS_OVERLAYFS=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
-          # echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SUS_KSTAT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SUS_OVERLAYFS=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./arch/arm64/configs/redbull-gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> ./arch/arm64/configs/redbull-gki_defconfig
           
           # Add additional tmpfs config setting
           echo "CONFIG_TMPFS_XATTR=y" >> ./arch/arm64/configs/redbull-gki_defconfig
@@ -210,6 +210,7 @@ jobs:
           sed -i 's/check_defconfig//' ./build.config.redbull
           sed -i 's/check_defconfig && //' ./build.config.redbull.no-cfi
           # Added commit id
+          GITHUB_SHA_SHORT=$(echo ${{ github.sha }} | cut -c 1-7)
           sed -i '$s|echo "\$res"|echo "\-g7b0944645172-@sn00py_z0r0-$GITHUB_SHA_SHORT"|' ./scripts/setlocalversion
           sed -i 's/-stable//' ./scripts/setlocalversion
           
