@@ -1,4 +1,4 @@
-name: Build
+name: Kernel build for redbull device
 
 on:
   workflow_dispatch:
