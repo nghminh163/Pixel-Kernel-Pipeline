@@ -111,7 +111,7 @@ jobs:
           
           # Initialize and sync kernel source
           echo "Initializing and syncing kernel source..."
-          $REPO init -u https://android.googlesource.com/kernel/manifest -b $BRANCH --repo-rev=v2.54 --depth=1
+          $REPO init -u https://android.googlesource.com/kernel/manifest -b $BRANCH
 
           # Sync repo and apply patches
           $REPO --version
@@ -225,14 +225,6 @@ jobs:
           
           echo "Building the kernel..."
           BUILD_AOSP_KERNEL=1 ./build_redbull-gki.sh
-
-      # # - name: Create Bootimgs Folder and Copy Images
-      # #   run: |
-      # #     echo "Changing to configuration directory: $CONFIG..."
-      # #     cd "$CONFIG"
-          
-      # #     echo "Copying Image"
-      # #     cp -r ./out/android-msm-pixel-4.19/dist/Image.lz4 ../AnyKernel3/Image
           
       - name: Create zip file for result
         run: |
