@@ -210,7 +210,11 @@ jobs:
           cp ../../../susfs4ksu/kernel_patches/fs/* ./fs/
           cp ../../../susfs4ksu/kernel_patches/include/linux/* ./include/linux/
 
-          cd ./KernelSU
+          if [ "$KERNEL_ROOT" = "kernelSU" ]; then
+            cd KernelSU/
+          elif [ "$KERNEL_ROOT" = "kernelSU-next" ]; then
+            cd KernelSU-Next/
+          fi
           
           # Apply SUSFS patch for KernelSU
           patch -p1 --fuzz=3 < 10_enable_susfs_for_ksu.patch || true
