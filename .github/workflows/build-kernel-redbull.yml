@@ -98,11 +98,11 @@ jobs:
       #       echo "✅ The `ramdisk` file was found: $FOUND"
       #     fi
 
-      # - name: Initialize and Sync Kernel Source
-      #   run: |
+      - name: Initialize and Sync Kernel Source
+        run: |
 
-      #     echo "Create a configuration directory:$CONFIG"
-      #     mkdir -p "$CONFIG"
+          echo "Create a configuration directory:$CONFIG"
+          mkdir -p "$CONFIG"
 
       #     echo "Copy ramdisk files：$RAMDISK_PATH to $CONFIG/"
       #     cp -fv "$RAMDISK_PATH/ramdisk" "$CONFIG/"
