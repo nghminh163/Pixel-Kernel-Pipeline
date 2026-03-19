@@ -35,7 +35,7 @@ on:
         default: 'kernelSU'
         options:
           - 'kernelSU'
-          # - 'kernelSU-next'
+          - 'kernelSU-next'
           # - 'SukiSU'
 
 jobs:
@@ -175,8 +175,8 @@ jobs:
           echo "Changing to configuration directory: $CONFIG..."
           cd "$CONFIG/private/msm-google/"
           
-          echo "Adding KernelSU..."
-          curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+          echo "Adding KernelSU_Next..."
+          curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s v1.1.1
 
       # - name: Add SukiSU Ultra
       #   if: ${{ github.event.inputs.kernel_root == 'SukiSU' }}
@@ -200,23 +200,18 @@ jobs:
           # Copy SUSFS patches
           # Check env $KERNEL_ROOT
           echo "KERNEL_ROOT is: $KERNEL_ROOT"
+          # Apply SUSFS patch for KernelSU
           if [ "$KERNEL_ROOT" = "kernelSU" ]; then
             cp ../../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU/
+            cd KernelSU/
           elif [ "$KERNEL_ROOT" = "kernelSU-next" ]; then
             cp ../../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next/
+            cd KernelSU-Next/ 
           fi
+          patch -p1 --fuzz=3 < 10_enable_susfs_for_ksu.patch || true
           cp ../../../susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.19.patch ./
           cp ../../../susfs4ksu/kernel_patches/fs/* ./fs/
           cp ../../../susfs4ksu/kernel_patches/include/linux/* ./include/linux/
-
-          if [ "$KERNEL_ROOT" = "kernelSU" ]; then
-            cd KernelSU/
-          elif [ "$KERNEL_ROOT" = "kernelSU-next" ]; then
-            cd KernelSU-Next/
-          fi
-          
-          # Apply SUSFS patch for KernelSU
-          patch -p1 --fuzz=3 < 10_enable_susfs_for_ksu.patch || true
           
           # Change to common directory and apply SUSFS patch
           cd ..
