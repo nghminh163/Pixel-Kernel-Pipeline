@@ -22,7 +22,7 @@
 
 
 ## Checked
-- Pixel 5 (redfin)
+- Pixel 5 (redfin, Stock kernel): Linux version 4.19.278-g7b0944645172-ab10812814 (build-user@build-host) (Android (7284624, based on r416183b) clang version 12.0.5 (https://android.googlesource.com/toolchain/llvm-project c935d99d7cf2016289302412d708641d52d2f7ee), LLD 12.0.5 (/buildbot/src/android/llvm-toolchain/out/llvm-project/lld c935d99d7cf2016289302412d708641d52d2f7ee)) #1 SMP PREEMPT Thu Sep 7 05:43:03 UTC 2023
   - [x] android-msm-redbull-4.19-android14 - no susfs - kernelSU
   - [x] android-msm-redbull-4.19-android14 - yes susfs - kernelSU
   - [ ] android-msm-redbull-4.19-android14 - non susfs - kernelSU-Next
